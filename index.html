@@ -1,135 +1,219 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/styles.css">
-    <link rel="shortcut icon" href="./assets/flask.png" type="image/x-icon">
-    <title>Расписание ПНХВМиИ-74</title>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>ПНХВМиИ-74</h1>
-            <p>6 семестр</p>
-            <div class="week-toggle">
-                <button class="week-btn active" onclick="switchWeek('numerator')">Числитель</button>
-                <button class="week-btn" onclick="switchWeek('denominator')">Знаменатель</button>
-            </div>
-        </div>
+<!DOCTYPE html> 
+<html lang="ru"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="./assets/styles.css"> 
+    <link rel="shortcut icon" href="./assets/flask.png" type="image/x-icon"> 
+    <title>Расписание ПНХВМиИ-74</title> 
+</head> 
+<body> 
+    <div class="container"> 
+        <div class="header"> 
+            <h1>ПНХВМиИ-74</h1> 
+            <p>6 семестр</p> 
+            <div class="week-toggle"> 
+                <button class="week-btn active" onclick="switchWeek('numerator')">Числитель</button> 
+                <button class="week-btn" onclick="switchWeek('denominator')">Знаменатель</button> 
+            </div> 
+        </div> 
+ 
+        <div class="schedule-content" id="scheduleContent"></div> 
+    </div> 
+ 
+    <script> 
+        const schedule = { 
+            numerator: { 
+                'Понедельник': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' } 
+                ], 
+                'Вторник': [ 
+                    { time: '8:30 - 10:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '312' }, 
+                    { time: '12:10 - 14:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' } 
+                ], 
+                'Среда': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' }, 
+                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '312' }, 
+                    { time: '12:10 - 14:10', subject: 'Оборудование пр-тва НВ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '14:30 - 16:10', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '319' } 
+                ], 
+                'Четверг': [ 
+                    { time: '8:30 - 10:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' } 
+                ], 
+                'Пятница': [ 
+                    { time: '8:30 - 10:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '10:20 - 12:00', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '12:10 - 14:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' } 
+                ], 
+                'Суббота': [ 
+                    { time: '8:30 - 10:10', subject: 'Основы права', teacher: 'Веремьева А.А.', room: '134' }, 
+                    { time: '10:20 - 12:00', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко Т.П.', room: 'ф.з' } 
+                ] 
+            }, 
+            denominator: { 
+                'Понедельник': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' }, 
+                    { time: '14:30 - 16:10', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '319' } 
+                ], 
+                'Вторник': [ 
+                    { time: '8:30 - 10:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '312' }, 
+                    { time: '12:10 - 14:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' } 
+                ], 
+                'Среда': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' }, 
+                    { time: '10:20 - 12:00', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '312' }, 
+                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' } 
+                ], 
+                'Четверг': [ 
+                    { time: '8:30 - 10:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '14:30 - 16:10', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко', room: 'ф.з' } 
+                ], 
+                'Пятница': [ 
+                    { time: '8:30 - 10:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '10:20 - 12:00', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '12:10 - 14:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '305' } 
+                ], 
+                'Суббота': [ 
+                    { time: '8:30 - 10:10', subject: 'Основы права', teacher: 'Веремеев А.А.', room: '134' }, 
+                    { time: '10:20 - 12:00', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко Т.П.', room: 'ф.з' } 
+                ] 
+            } 
+        }; 
 
-        <div class="schedule-content" id="scheduleContent"></div>
-    </div>
-
-    <script>
-        const schedule = {
-            numerator: {
-                'Понедельник': [
-                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' },
-                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' },
-                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' }
-                ],
-                'Вторник': [
-                    { time: '8:30 - 10:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' },
-                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '312' },
-                    { time: '12:10 - 14:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' }
-                ],
-                'Среда': [
-                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' },
-                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '312' },
-                    { time: '12:10 - 14:10', subject: 'Оборудование пр-тва НВ', teacher: 'Дернейко Е.Б.', room: '312' },
-                    { time: '14:30 - 16:10', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '319' }
-                ],
-                'Четверг': [
-                    { time: '8:30 - 10:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' },
-                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' },
-                    { time: '12:10 - 14:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }
-                ],
-                'Пятница': [
-                    { time: '8:30 - 10:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' },
-                    { time: '10:20 - 12:00', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' },
-                    { time: '12:10 - 14:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }
-                ],
-                'Суббота': [
-                    { time: '8:30 - 10:10', subject: 'Основы права', teacher: 'Веремьева А.А.', room: '134' },
-                    { time: '10:20 - 12:00', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко Т.П.', room: 'ф.з' }
-                ]
-            },
-            denominator: {
-                'Понедельник': [
-                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' },
-                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' },
-                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' },
-                    { time: '14:30 - 16:10', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '319' }
-                ],
-                'Вторник': [
-                    { time: '8:30 - 10:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' },
-                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '312' },
-                    { time: '12:10 - 14:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' }
-                ],
-                'Среда': [
-                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '310' },
-                    { time: '10:20 - 12:00', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '312' },
-                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' }
-                ],
-                'Четверг': [
-                    { time: '8:30 - 10:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' },
-                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' },
-                    { time: '12:10 - 14:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' },
-                    { time: '14:30 - 16:10', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко', room: 'ф.з' }
-                ],
-                'Пятница': [
-                    { time: '8:30 - 10:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' },
-                    { time: '10:20 - 12:00', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' },
-                    { time: '12:10 - 14:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '305' }
-                ],
-                'Суббота': [
-                    { time: '8:30 - 10:10', subject: 'Основы права', teacher: 'Веремеев А.А.', room: '134' },
-                    { time: '10:20 - 12:00', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко Т.П.', room: 'ф.з' }
-                ]
+        // Расписание недель на основе фото
+        const weekSchedule = {
+            2026: {
+                2: { // Февраль
+                    numerator: [2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21],
+                    denominator: [9, 10, 11, 12, 13, 14, 23, 24, 25, 26, 27, 28]
+                },
+                3: { // Март
+                    numerator: [2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 30, 31],
+                    denominator: [9, 10, 11, 12, 13, 14, 23, 24, 25, 26, 27, 28]
+                },
+                4: { // Апрель
+                    numerator: [1, 2, 3, 4, 13, 14, 15, 16, 17, 18, 27, 28, 29, 30],
+                    denominator: [6, 7, 8, 9, 10, 11, 20, 21, 22, 23, 24, 25]
+                },
+                5: { // Май
+                    numerator: [1, 2, 11, 12, 13, 14, 15, 16, 25, 26, 27, 28, 29, 30],
+                    denominator: [4, 5, 6, 7, 8, 9, 18, 19, 20, 21, 22, 23]
+                },
+                6: { // Июнь
+                    numerator: [8, 9, 10, 11, 12, 13, 22, 23, 24, 25, 26, 27],
+                    denominator: [1, 2, 3, 4, 5, 6, 15, 16, 17, 18, 19, 20, 29, 30]
+                },
+                7: { // Июль
+                    numerator: [6, 7, 8, 9, 10, 11],
+                    denominator: [1, 2, 3, 4, 13, 14, 15, 16, 17, 18]
+                }
             }
         };
 
-        let currentWeek = 'numerator';
+        function getCurrentWeekType() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1; // getMonth() возвращает 0-11
+            const day = now.getDate();
 
-        function switchWeek(week) {
-            currentWeek = week;
-            document.querySelectorAll('.week-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderSchedule();
+            // Проверяем есть ли данные для текущего года и месяца
+            if (!weekSchedule[year] || !weekSchedule[year][month]) {
+                return 'numerator'; // По умолчанию
+            }
+
+            const monthSchedule = weekSchedule[year][month];
+
+            // Ищем ближайший понедельник для текущей даты
+            const dayOfWeek = now.getDay();
+            const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const monday = new Date(now);
+            monday.setDate(day + daysToMonday);
+            const mondayDate = monday.getDate();
+
+            // Проверяем числитель
+            if (monthSchedule.numerator.includes(mondayDate)) {
+                return 'numerator';
+            }
+            
+            // Проверяем знаменатель
+            if (monthSchedule.denominator.includes(mondayDate)) {
+                return 'denominator';
+            }
+
+            // Если текущая дата не найдена, ищем ближайший предыдущий понедельник
+            for (let i = mondayDate; i >= 1; i--) {
+                if (monthSchedule.numerator.includes(i)) {
+                    return 'numerator';
+                }
+                if (monthSchedule.denominator.includes(i)) {
+                    return 'denominator';
+                }
+            }
+
+            return 'numerator'; // По умолчанию
         }
 
-        function renderSchedule() {
-            const content = document.getElementById('scheduleContent');
-            const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-            
-            let html = '';
-            days.forEach(day => {
-                const lessons = schedule[currentWeek][day] || [];
-                const activeLessons = lessons.filter(l => l.subject);
-                
-                html += `
-                    <div class="day-schedule">
-                        <div class="day-header">${day}</div>
-                        ${activeLessons.length > 0 ? 
-                            activeLessons.map(lesson => `
-                                <div class="lesson">
-                                    <div class="time">${lesson.time}</div>
-                                    <div class="subject">${lesson.subject}</div>
-                                    <div class="teacher">${lesson.teacher}</div>
-                                    <div class="room">${lesson.room || '—'}</div>
-                                </div>
-                            `).join('') 
-                            : '<div class="empty-day">Занятий нет</div>'
-                        }
-                    </div>
-                `;
+        let currentWeek = getCurrentWeekType();
+ 
+        function switchWeek(week) { 
+            currentWeek = week; 
+            document.querySelectorAll('.week-btn').forEach(btn => btn.classList.remove('active')); 
+            event.target.classList.add('active'); 
+            renderSchedule(); 
+        } 
+ 
+        function renderSchedule() { 
+            const content = document.getElementById('scheduleContent'); 
+            const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']; 
+             
+            let html = ''; 
+            days.forEach(day => { 
+                const lessons = schedule[currentWeek][day] || []; 
+                const activeLessons = lessons.filter(l => l.subject); 
+                 
+                html += ` 
+                    <div class="day-schedule"> 
+                        <div class="day-header">${day}</div> 
+                        ${activeLessons.length > 0 ?  
+                            activeLessons.map(lesson => ` 
+                                <div class="lesson"> 
+                                    <div class="time">${lesson.time}</div> 
+                                    <div class="subject">${lesson.subject}</div> 
+                                    <div class="teacher">${lesson.teacher}</div> 
+                                    <div class="room">${lesson.room || '—'}</div> 
+                                </div> 
+                            `).join('')  
+                            : '<div class="empty-day">Занятий нет</div>' 
+                        } 
+                    </div> 
+                `; 
+            }); 
+             
+            content.innerHTML = html; 
+        } 
+
+        // Инициализация при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            // Устанавливаем активную кнопку
+            document.querySelectorAll('.week-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((currentWeek === 'numerator' && btn.textContent === 'Числитель') ||
+                    (currentWeek === 'denominator' && btn.textContent === 'Знаменатель')) {
+                    btn.classList.add('active');
+                }
             });
-            
-            content.innerHTML = html;
-        }
-
-        renderSchedule();
-    </script>
-</body>
+            renderSchedule();
+        });
+    </script> 
+</body> 
 </html>
