@@ -20,6 +20,7 @@
     --bg: #0f172a;
     --card-bg: #1e293b;
     --text: #f1f5f9;
+    --text-2: #0f172a;
     --text-light: #94a3b8;
     --border: #334155;
     --current-bg: #064e3b;
@@ -185,6 +186,7 @@ h1 {
     border-radius: 6px;
     font-size: 0.85em;
     margin-bottom: 15px;
+    color: var(--text-2);
 }
 
 .navigation {
