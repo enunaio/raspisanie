@@ -1,0 +1,551 @@
+<!DOCTYPE html> 
+<html lang="ru"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/styles.css">
+    <link rel="shortcut icon" href="./assets/flask.png" type="image/x-icon"> 
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Расписание ПНХВМиИ-74</title> 
+    <style>
+        
+    </style>
+</head> 
+<body> 
+    <div class="container"> 
+        <div class="install-prompt" id="installPrompt">
+            <span>Установите приложение для быстрого доступа</span>
+            <button class="install-btn" id="installBtn">Установить</button>
+        </div>
+
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <h1>ПНХВМиИ-74</h1> 
+                    <p class="semester">6 семестр</p> 
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <svg id="moonIcon" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg id="sunIcon" style="display:none" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+                        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="week-toggle"> 
+                <button class="week-btn" data-week="numerator">Числитель</button> 
+                <button class="week-btn" data-week="denominator">Знаменатель</button> 
+            </div>
+
+            <div class="next-week-info" id="nextWeekInfo"></div>
+
+            <div class="navigation">
+                <button class="nav-btn" id="todayBtn">Сегодня</button>
+                <button class="nav-btn" id="tomorrowBtn">Завтра</button>
+                <button class="nav-btn" id="allBtn">Вся неделя</button>
+                <input type="date" class="date-picker" id="datePicker">
+            </div>
+        </div>
+
+        <div class="time-status-bar" id="timeStatusBar"></div>
+ 
+        <div class="schedule-content" id="scheduleContent"></div> 
+    </div> 
+ 
+    <script> 
+        const schedule = { 
+            numerator: { 
+                'Понедельник': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '305' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' } 
+                ], 
+                'Вторник': [ 
+                    { time: '8:30 - 10:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '119' }, 
+                    { time: '12:10 - 14:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' } 
+                ], 
+                'Среда': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '305' }, 
+                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '134' }, 
+                    { time: '12:10 - 14:10', subject: 'Оборудование пр-тва НВ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '14:30 - 16:10', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '319' } 
+                ], 
+                'Четверг': [ 
+                    { time: '8:30 - 10:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' } 
+                ], 
+                'Пятница': [ 
+                    { time: '8:30 - 10:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '10:20 - 12:00', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '12:10 - 14:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' } 
+                ], 
+                'Суббота': [ 
+                    { time: '8:30 - 10:10', subject: 'Основы права', teacher: 'Веремьева А.А.', room: '119а' }, 
+                    { time: '10:20 - 12:00', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко Т.П.', room: 'ф.з' } 
+                ] 
+            }, 
+            denominator: { 
+                'Понедельник': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '305' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' }, 
+                    { time: '14:30 - 16:10', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '319' } 
+                ], 
+                'Вторник': [ 
+                    { time: '8:30 - 10:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '10:20 - 12:00', subject: 'Экономика организации', teacher: 'Занкович С.П.', room: '119' }, 
+                    { time: '12:10 - 14:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' } 
+                ], 
+                'Среда': [ 
+                    { time: '8:30 - 10:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '305' }, 
+                    { time: '10:20 - 12:00', subject: 'Основы менеджмента', teacher: 'Шибаровская Д.Е.', room: '315' }, 
+                    { time: '12:10 - 14:10', subject: 'Основы промышленной экологии', teacher: 'Минучиц Т.А.', room: '309' } 
+                ], 
+                'Четверг': [ 
+                    { time: '8:30 - 10:10', subject: 'Автоматизация химического производства', teacher: 'Суконко Е.Л.', room: '119' }, 
+                    { time: '10:20 - 12:00', subject: 'Технология неорганических веществ', teacher: 'Гриневич И.В.', room: '310' }, 
+                    { time: '12:10 - 14:10', subject: 'Оборудование производства неорганических веществ', teacher: 'Дернейко Е.Б.', room: '312' }, 
+                    { time: '14:30 - 16:10', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко', room: 'ф.з' } 
+                ], 
+                'Пятница': [ 
+                    { time: '8:30 - 10:10', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '10:20 - 12:00', subject: 'Аналитический контроль производства', teacher: 'Гиль О.Л.', room: '304' }, 
+                    { time: '12:10 - 14:10', subject: 'Технология фосфорных и калийных удобрений', teacher: 'Гиль О.Л.', room: '315' } 
+                ], 
+                'Суббота': [ 
+                    { time: '8:30 - 10:10', subject: 'Основы права', teacher: 'Веремеев А.А.', room: '119а' }, 
+                    { time: '10:20 - 12:00', subject: 'Физкультура', teacher: 'Новицкий А.В. Науменко Т.П.', room: 'ф.з' } 
+                ] 
+            } 
+        }; 
+
+        const weekSchedule = {
+            2026: {
+                2: { numerator: [2, 16], denominator: [9, 23] },
+                3: { numerator: [2, 16, 30], denominator: [9, 23] },
+                4: { numerator: [1, 13, 27], denominator: [6, 20] },
+                5: { numerator: [1, 11, 25], denominator: [4, 18] },
+                6: { numerator: [8, 22], denominator: [1, 15, 29] },
+                7: { numerator: [6], denominator: [1, 13] }
+            }
+        };
+
+        // Детальное расписание пар с перерывами
+        const detailedSchedule = [
+            { lesson: 1, start: '8:30', end: '9:15', break: 10 },
+            { lesson: 1, start: '9:25', end: '10:10', break: 10 },
+            { lesson: 2, start: '10:20', end: '11:05', break: 10 },
+            { lesson: 2, start: '11:15', end: '12:00', break: 10 },
+            { lesson: 3, start: '12:10', end: '12:55', break: 30 },
+            { lesson: 3, start: '13:25', end: '14:10', break: 20 },
+            { lesson: 4, start: '14:30', end: '15:15', break: 10 },
+            { lesson: 4, start: '15:25', end: '16:10', break: 0 }
+        ];
+
+        let currentWeek = getCurrentWeekType();
+        let viewMode = 'all';
+        let selectedDate = null;
+
+        function getMinskTime() {
+            return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Minsk' }));
+        }
+
+        function getCurrentWeekType() {
+            const now = getMinskTime();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+
+            if (!weekSchedule[year] || !weekSchedule[year][month]) {
+                return 'numerator';
+            }
+
+            const monthSchedule = weekSchedule[year][month];
+            const dayOfWeek = now.getDay();
+            const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const monday = new Date(now);
+            monday.setDate(day + daysToMonday);
+            const mondayDate = monday.getDate();
+
+            if (monthSchedule.numerator.includes(mondayDate)) return 'numerator';
+            if (monthSchedule.denominator.includes(mondayDate)) return 'denominator';
+
+            for (let i = mondayDate; i >= 1; i--) {
+                if (monthSchedule.numerator.includes(i)) return 'numerator';
+                if (monthSchedule.denominator.includes(i)) return 'denominator';
+            }
+
+            return 'numerator';
+        }
+
+        function getNextWeekType() {
+            const now = getMinskTime();
+            const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+            const year = nextWeek.getFullYear();
+            const month = nextWeek.getMonth() + 1;
+            const day = nextWeek.getDate();
+
+            if (!weekSchedule[year] || !weekSchedule[year][month]) {
+                return currentWeek === 'numerator' ? 'denominator' : 'numerator';
+            }
+
+            const monthSchedule = weekSchedule[year][month];
+            const dayOfWeek = nextWeek.getDay();
+            const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const monday = new Date(nextWeek);
+            monday.setDate(day + daysToMonday);
+            const mondayDate = monday.getDate();
+
+            if (monthSchedule.numerator.includes(mondayDate)) return 'numerator';
+            if (monthSchedule.denominator.includes(mondayDate)) return 'denominator';
+
+            return currentWeek === 'numerator' ? 'denominator' : 'numerator';
+        }
+
+        function timeToMinutes(time) {
+            const [h, m] = time.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function getCurrentStatus() {
+            const now = getMinskTime();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            for (let i = 0; i < detailedSchedule.length; i++) {
+                const slot = detailedSchedule[i];
+                const startMinutes = timeToMinutes(slot.start);
+                const endMinutes = timeToMinutes(slot.end);
+
+                if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+                    return {
+                        type: 'lesson',
+                        lesson: slot.lesson,
+                        part: i % 2 === 0 ? 1 : 2,
+                        start: slot.start,
+                        end: slot.end,
+                        progress: ((currentMinutes - startMinutes) / (endMinutes - startMinutes)) * 100
+                    };
+                }
+
+                if (slot.break > 0) {
+                    const breakEnd = endMinutes + slot.break;
+                    if (currentMinutes >= endMinutes && currentMinutes < breakEnd) {
+                        return {
+                            type: 'break',
+                            duration: slot.break,
+                            nextLesson: i < detailedSchedule.length - 1 ? detailedSchedule[i + 1] : null,
+                            progress: ((currentMinutes - endMinutes) / slot.break) * 100
+                        };
+                    }
+                }
+            }
+
+            if (currentMinutes < timeToMinutes('8:30')) {
+                return { type: 'before', nextStart: '8:30' };
+            }
+
+            return { type: 'after' };
+        }
+
+        function updateTimeStatusBar() {
+            const now = getMinskTime();
+            const status = getCurrentStatus();
+            const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            let html = `<div class="current-time">${timeStr}</div>`;
+
+            if (status.type === 'lesson') {
+                html += `
+                    <div class="lesson-timeline">
+                        <div class="timeline-progress" style="width: ${status.progress}%"></div>
+                    </div>
+                    <div class="timeline-labels">
+                        <span>${status.start}</span>
+                        <span>${status.end}</span>
+                    </div>
+                    <div class="status-text">
+                        <strong>${status.lesson} пара (${status.part}/2)</strong> • Осталось ${Math.ceil((timeToMinutes(status.end) - (now.getHours() * 60 + now.getMinutes())))} мин
+                    </div>
+                `;
+            } else if (status.type === 'break') {
+                html += `
+                    <div class="lesson-timeline">
+                        <div class="timeline-progress" style="width: ${status.progress}%; background: linear-gradient(90deg, #6366f1, #f59e0b)"></div>
+                    </div>
+                    <div class="status-text">
+                        <strong>Перерыв</strong> • ${status.duration} минут
+                        ${status.nextLesson ? ` • Следующая часть в ${status.nextLesson.start}` : ''}
+                    </div>
+                `;
+            } else if (status.type === 'before') {
+                html += `
+                    <div class="status-text">
+                        До начала занятий • Первая пара в ${status.nextStart}
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="status-text">
+                        Занятия закончились
+                    </div>
+                `;
+            }
+
+            document.getElementById('timeStatusBar').innerHTML = html;
+        }
+
+        function updateNextWeekInfo() {
+            const nextWeek = getNextWeekType();
+            const nextWeekText = nextWeek === 'numerator' ? 'Числитель' : 'Знаменатель';
+            document.getElementById('nextWeekInfo').textContent = `Следующая неделя: ${nextWeekText}`;
+        }
+
+        function switchWeek(week) {
+            currentWeek = week;
+            document.querySelectorAll('.week-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.week === week);
+            });
+            renderSchedule();
+        }
+
+        function getCurrentDayName() {
+            const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const now = selectedDate || getMinskTime();
+            return days[now.getDay()];
+        }
+
+        function getTomorrowDayName() {
+            const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const tomorrow = new Date((selectedDate || getMinskTime()).getTime() + 24 * 60 * 60 * 1000);
+            return days[tomorrow.getDay()];
+        }
+
+        function getLessonStatus(lesson) {
+            const now = getMinskTime();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const [start, end] = lesson.time.split(' - ').map(t => {
+                const [h, m] = t.split(':').map(Number);
+                return h * 60 + m;
+            });
+
+            if (currentMinutes >= start && currentMinutes <= end) {
+                const status = getCurrentStatus();
+                if (status.type === 'lesson') {
+                    return { status: 'current', badge: 'Сейчас' };
+                } else if (status.type === 'break') {
+                    return { status: 'on-break', badge: 'Перерыв' };
+                }
+            }
+
+            if (currentMinutes < start) {
+                const lessons = schedule[currentWeek][getCurrentDayName()] || [];
+                const nextIndex = lessons.findIndex(l => {
+                    const [s] = l.time.split(' - ').map(t => {
+                        const [h, m] = t.split(':').map(Number);
+                        return h * 60 + m;
+                    });
+                    return currentMinutes < s;
+                });
+                
+                if (nextIndex >= 0 && lessons[nextIndex].time === lesson.time) {
+                    return { status: 'next', badge: 'Следующая' };
+                }
+            }
+
+            return { status: '', badge: '' };
+        }
+
+        function renderSchedule() {
+            const content = document.getElementById('scheduleContent');
+            const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const currentDay = getCurrentDayName();
+            const tomorrowDay = getTomorrowDayName();
+
+            let daysToShow = days;
+            if (viewMode === 'today') {
+                daysToShow = [currentDay];
+            } else if (viewMode === 'tomorrow') {
+                daysToShow = [tomorrowDay];
+            }
+
+            const now = getMinskTime();
+            const isToday = !selectedDate || (selectedDate.toDateString() === now.toDateString());
+
+            let html = '';
+            daysToShow.forEach(day => {
+                const lessons = schedule[currentWeek][day] || [];
+                const activeLessons = lessons.filter(l => l.subject);
+                const isCurrentDay = isToday && day === currentDay;
+
+                html += `
+                    <div class="day-schedule ${isCurrentDay ? 'today' : ''}">
+                        <div class="day-header">
+                            <span>${day}</span>
+                            ${isCurrentDay ? '<span class="day-badge">Сегодня</span>' : ''}
+                            ${day === tomorrowDay && viewMode === 'tomorrow' ? '<span class="day-badge">Завтра</span>' : ''}
+                        </div>
+                        ${activeLessons.length > 0 ?
+                            activeLessons.map(lesson => {
+                                const lessonStatus = isCurrentDay ? getLessonStatus(lesson) : { status: '', badge: '' };
+
+                                return `
+                                    <div class="lesson ${lessonStatus.status}">
+                                        ${lessonStatus.badge ? `
+                                            <div class="lesson-status ${lessonStatus.status === 'current' ? 'now' : lessonStatus.status === 'next' ? 'next-lesson' : 'break'}">
+                                                <svg viewBox="0 0 24 24">
+                                                    ${lessonStatus.status === 'current' ? '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' : 
+                                                      lessonStatus.status === 'on-break' ? '<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>' :
+                                                      '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>'}
+                                                </svg>
+                                                ${lessonStatus.badge}
+                                            </div>
+                                        ` : ''}
+                                        <div class="time">
+                                            <svg viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                                                <polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                            </svg>
+                                            ${lesson.time}
+                                        </div>
+                                        <div class="subject">${lesson.subject}</div>
+                                        <div class="teacher">
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                                <circle cx="12" cy="7" r="4"/>
+                                            </svg>
+                                            ${lesson.teacher}
+                                        </div>
+                                        <div class="room">
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                                <circle cx="12" cy="10" r="3"/>
+                                            </svg>
+                                            ${lesson.room || '—'}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')
+                            : '<div class="empty-day">Занятий нет</div>'
+                        }
+                    </div>
+                `;
+            });
+
+            content.innerHTML = html;
+        }
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('moonIcon').style.display = newTheme === 'dark' ? 'none' : 'block';
+            document.getElementById('sunIcon').style.display = newTheme === 'dark' ? 'block' : 'none';
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Week buttons
+        document.querySelectorAll('.week-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchWeek(btn.dataset.week));
+        });
+
+        // Navigation
+        document.getElementById('todayBtn').addEventListener('click', () => {
+            viewMode = 'today';
+            selectedDate = null;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('todayBtn').classList.add('active');
+            renderSchedule();
+        });
+
+        document.getElementById('tomorrowBtn').addEventListener('click', () => {
+            viewMode = 'tomorrow';
+            selectedDate = null;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tomorrowBtn').classList.add('active');
+            renderSchedule();
+        });
+
+        document.getElementById('allBtn').addEventListener('click', () => {
+            viewMode = 'all';
+            selectedDate = null;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('allBtn').classList.add('active');
+            renderSchedule();
+        });
+
+        document.getElementById('datePicker').addEventListener('change', (e) => {
+            if (e.target.value) {
+                selectedDate = new Date(e.target.value + 'T00:00:00');
+                viewMode = 'today';
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                renderSchedule();
+            }
+        });
+
+        // PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.add('show');
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                document.getElementById('installPrompt').classList.remove('show');
+            }
+        });
+
+        // Initialize
+        function init() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('moonIcon').style.display = savedTheme === 'dark' ? 'none' : 'block';
+            document.getElementById('sunIcon').style.display = savedTheme === 'dark' ? 'block' : 'none';
+
+            const now = getMinskTime();
+            const hour = now.getHours();
+            
+            if (hour >= 18) {
+                viewMode = 'tomorrow';
+                document.getElementById('tomorrowBtn').classList.add('active');
+            } else {
+                viewMode = 'all';
+                document.getElementById('allBtn').classList.add('active');
+            }
+
+            document.querySelectorAll('.week-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.week === currentWeek);
+            });
+
+            updateNextWeekInfo();
+            renderSchedule();
+            updateTimeStatusBar();
+
+            setInterval(updateTimeStatusBar, 1000);
+        }
+
+        init();
+    </script> 
+</body> 
+</html>
