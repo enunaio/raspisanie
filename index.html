@@ -526,12 +526,12 @@
             const now = getMinskTime();
             const hour = now.getHours();
             
-            if (hour >= 18) {
-                viewMode = 'tomorrow';
-                document.getElementById('tomorrowBtn').classList.add('active');
-            } else {
-                viewMode = 'all';
-                document.getElementById('allBtn').classList.add('active');
+            if (hour >= 18) { 
+    viewMode = 'tomorrow'; 
+    document.getElementById('tomorrowBtn').classList.add('active'); 
+} else { 
+    viewMode = 'today'; 
+    document.getElementById('todayBtn').classList.add('active'); 
             }
 
             document.querySelectorAll('.week-btn').forEach(btn => {
@@ -548,4 +548,5 @@
         init();
     </script> 
 </body> 
+
 </html>
