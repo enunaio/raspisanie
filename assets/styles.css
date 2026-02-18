@@ -12,7 +12,6 @@
     --current-bg: #dcfce7; 
     --next-bg: #fef3c7; 
     --break-bg: #dbeafe; 
-    --next-text: #1e293b;
 } 
  
 [data-theme="dark"] { 
@@ -27,7 +26,6 @@
     --current-bg: #064e3b; 
     --next-bg: #fef3c7; 
     --break-bg: #1e3a8a; 
-    --next-text: #1a1a1a;
 } 
  
 * { 
@@ -287,28 +285,28 @@ h1 {
  
 .lesson.next { 
     background: var(--next-bg); 
-    border-left: 4px solid var(--warning);
-    color: var(--next-text);
+    border-left: 4px solid var(--warning); 
 } 
-
-/* В тёмной теме у карточки "следующая пара" принудительно тёмный текст */
-.lesson.next .subject,
-.lesson.next .time,
-.lesson.next .teacher,
-.lesson.next .room {
-    color: var(--next-text);
-}
-
-.lesson.next .time svg,
-.lesson.next .teacher svg,
-.lesson.next .room svg {
-    fill: var(--next-text);
-}
  
 .lesson.on-break { 
     background: var(--break-bg); 
     border-left: 4px solid var(--primary); 
 } 
+
+/* Тёмная тема: текст на жёлтом фоне "следующая пара" делаем тёмным */
+[data-theme="dark"] .lesson.next,
+[data-theme="dark"] .lesson.next .subject,
+[data-theme="dark"] .lesson.next .time,
+[data-theme="dark"] .lesson.next .teacher,
+[data-theme="dark"] .lesson.next .room {
+    color: #1a1a1a;
+}
+
+[data-theme="dark"] .lesson.next .time svg,
+[data-theme="dark"] .lesson.next .teacher svg,
+[data-theme="dark"] .lesson.next .room svg {
+    fill: #1a1a1a;
+}
  
 .lesson-status { 
     position: absolute; 
